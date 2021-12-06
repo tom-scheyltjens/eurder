@@ -13,4 +13,8 @@ public class CustomerRepository {
     public CustomerRepository() {
         this.customers = new ConcurrentHashMap<>();
     }
+
+    public void addCustomer(Customer customer) {
+        customers.put(customer.getId(), customer);
+    }
 }

@@ -19,4 +19,8 @@ public class Customer {
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
     }
+
+    public String getId() {
+        return id;
+    }
 }
