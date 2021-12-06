@@ -1,5 +1,6 @@
 package com.switchfully.eurder.domain;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.UUID;
 
 public class Customer {
