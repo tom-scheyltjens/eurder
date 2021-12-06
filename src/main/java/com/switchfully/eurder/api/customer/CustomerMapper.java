@@ -1,4 +1,4 @@
-package com.switchfully.eurder.api;
+package com.switchfully.eurder.api.customer;
 
 import com.switchfully.eurder.domain.Customer;
 import org.springframework.stereotype.Component;

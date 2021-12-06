@@ -1,7 +1,9 @@
-package com.switchfully.eurder.api;
+package com.switchfully.eurder.api.customer;
 
 import com.switchfully.eurder.domain.Customer;
 import com.switchfully.eurder.service.CustomerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,6 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomerMapper customerMapper;
+    private final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 
     public CustomerController(CustomerService customerService, CustomerMapper customerMapper) {
         this.customerService = customerService;
@@ -36,12 +39,13 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+            MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        exception.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
+            LOGGER.error(errorMessage, exception);
         });
         return errors;
     }

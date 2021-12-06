@@ -1,6 +1,5 @@
 package com.switchfully.eurder.domain;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.UUID;
 
 public class Customer {
@@ -45,15 +44,4 @@ public class Customer {
         return phoneNumber;
     }
 
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "id='" + id + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", address=" + address +
-                ", emailAddress='" + emailAddress + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
-    }
 }

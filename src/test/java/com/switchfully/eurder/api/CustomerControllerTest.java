@@ -1,5 +1,7 @@
 package com.switchfully.eurder.api;
 
+import com.switchfully.eurder.api.customer.CreateCustomerDto;
+import com.switchfully.eurder.api.customer.CustomerDto;
 import com.switchfully.eurder.domain.Address;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
