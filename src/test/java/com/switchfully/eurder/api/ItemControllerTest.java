@@ -98,4 +98,23 @@ public class ItemControllerTest {
                 .assertThat()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
+
+    @Test
+    void createItem_givenAnItemToCreateWithANegativeAmountAndAdminAccess_thenAnErrorIsReturned() {
+        CreateItemDto createItemDto = new CreateItemDto("Item", "the first item", 14.7, -2);
+
+
+        RestAssured
+                .given()
+                .body(createItemDto)
+                .accept(JSON)
+                .contentType(JSON)
+                .header("Authorization", Utility.generateBase64Authorization("default@admin.com", "123"))
+                .when()
+                .port(port)
+                .post("/items")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
 }
