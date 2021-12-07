@@ -5,8 +5,10 @@ import com.switchfully.eurder.domain.Admin;
 import com.switchfully.eurder.domain.Customer;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Repository
 public class CustomerRepository {
@@ -30,5 +32,11 @@ public class CustomerRepository {
     public void createDefaultAdmin() {
         Admin admin = new Admin("Default", "Admin", new Address("Minstreet", "14", "2300", "Turnhout"), "default@admin.com", "0123456789");
         customers.put(admin.getId(), admin);
+    }
+
+    public List<Customer> getAllCustomers() {
+        return customers.values().stream()
+                .filter(customer -> customer.getClass().equals(Customer.class))
+                .collect(Collectors.toList());
     }
 }

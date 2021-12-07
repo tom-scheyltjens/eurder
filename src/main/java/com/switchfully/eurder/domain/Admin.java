@@ -3,9 +3,10 @@ package com.switchfully.eurder.domain;
 import java.util.List;
 
 import static com.switchfully.eurder.domain.Feature.CREATE_ITEM;
+import static com.switchfully.eurder.domain.Feature.VIEW_CUSTOMER;
 
 public class Admin extends Customer {
-    private static final List<Feature> FEATURES = List.of(CREATE_ITEM);
+    private static final List<Feature> FEATURES = List.of(CREATE_ITEM, VIEW_CUSTOMER);
 
     public Admin(String firstName, String lastName, Address address, String emailAddress, String phoneNumber) {
         super(firstName, lastName, address, emailAddress, phoneNumber, FEATURES);
