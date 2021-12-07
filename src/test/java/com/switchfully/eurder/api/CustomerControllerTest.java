@@ -4,8 +4,8 @@ import com.switchfully.eurder.Utility;
 import com.switchfully.eurder.api.customer.CreateCustomerDto;
 import com.switchfully.eurder.api.customer.CustomerDto;
 import com.switchfully.eurder.api.customer.CustomerMapper;
-import com.switchfully.eurder.domain.Address;
-import com.switchfully.eurder.domain.Customer;
+import com.switchfully.eurder.domain.user.Address;
+import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.repository.CustomerRepository;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,7 +36,7 @@ public class CustomerControllerTest {
 
     @BeforeAll
     public void setUp(){
-        tim = new Customer("Tim", "Bae", new Address("Birdstr", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789", null);
+        tim = new Customer("Tim", "Bae", new Address("street", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
         customerRepository.addCustomer(tim);
     }
 
@@ -86,7 +86,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void getAllCustomer_givenAdminAccessAndACustomerTim_thenTimIsInTheReturnedList() {
+    void getAllCustomers_givenAdminAccessAndACustomerTim_thenTimIsInTheReturnedList() {
 
         CustomerDto[] customerDtos =
                 RestAssured
@@ -104,6 +104,27 @@ public class CustomerControllerTest {
 
 
         assertThat(customerDtos).contains(customerMapper.customerToCustomerDto(tim));
+    }
+
+    @Test
+    void getCustomer_givenAdminAccessAndACustomerTim_thenTimIsInTheReturned() {
+
+        CustomerDto customerDto =
+                RestAssured
+                        .given()
+                        .contentType(JSON)
+                        .header("Authorization", Utility.generateBase64Authorization("default@admin.com", "123"))
+                        .when()
+                        .port(port)
+                        .get("/customers/" + tim.getId())
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.OK.value())
+                        .extract()
+                        .as(CustomerDto.class);
+
+
+        assertThat(customerDto).isEqualTo(customerMapper.customerToCustomerDto(tim));
     }
 
 }

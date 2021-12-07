@@ -2,7 +2,7 @@ package com.switchfully.eurder.service;
 
 import com.switchfully.eurder.api.customer.CustomerDto;
 import com.switchfully.eurder.api.customer.CustomerMapper;
-import com.switchfully.eurder.domain.Customer;
+import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 

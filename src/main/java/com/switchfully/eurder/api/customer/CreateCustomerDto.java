@@ -1,6 +1,6 @@
 package com.switchfully.eurder.api.customer;
 
-import com.switchfully.eurder.domain.Address;
+import com.switchfully.eurder.domain.user.Address;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;

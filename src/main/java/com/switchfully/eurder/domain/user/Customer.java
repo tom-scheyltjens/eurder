@@ -1,9 +1,5 @@
-package com.switchfully.eurder.domain;
+package com.switchfully.eurder.domain.user;
 
-import org.springframework.lang.Nullable;
-
-import javax.validation.constraints.Null;
-import java.util.List;
 import java.util.UUID;
 
 public class Customer {
@@ -13,9 +9,8 @@ public class Customer {
     private final Address address;
     private final String emailAddress;
     private final String phoneNumber;
-    private final List<Feature> featureList;
 
-    public Customer(String firstName, String lastName, Address address, String emailAddress, String phoneNumber, @Nullable List<Feature> featureList) {
+    public Customer(String firstName, String lastName, Address address, String emailAddress, String phoneNumber) {
 
         this.id = UUID.randomUUID().toString();
         this.firstName = firstName;
@@ -23,7 +18,6 @@ public class Customer {
         this.address = address;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
-        this.featureList = featureList;
     }
 
     public String getId() {
@@ -50,7 +44,7 @@ public class Customer {
         return phoneNumber;
     }
 
-    public boolean isAbleTo(Feature feature){
+    public boolean isAbleTo(Feature feature) {
         return false;
     }
 

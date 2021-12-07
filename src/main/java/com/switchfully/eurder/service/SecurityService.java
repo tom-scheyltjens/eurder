@@ -1,7 +1,7 @@
 package com.switchfully.eurder.service;
 
-import com.switchfully.eurder.domain.Customer;
-import com.switchfully.eurder.domain.Feature;
+import com.switchfully.eurder.domain.user.Customer;
+import com.switchfully.eurder.domain.user.Feature;
 import com.switchfully.eurder.domain.exception.UnauthorizedException;
 import com.switchfully.eurder.repository.CustomerRepository;
 import org.springframework.stereotype.Service;

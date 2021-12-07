@@ -1,6 +1,6 @@
 package com.switchfully.eurder.api.customer;
 
-import com.switchfully.eurder.domain.Customer;
+import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.service.CustomerService;
 import com.switchfully.eurder.service.SecurityService;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.switchfully.eurder.domain.Feature.VIEW_CUSTOMER;
+import static com.switchfully.eurder.domain.user.Feature.VIEW_CUSTOMER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController

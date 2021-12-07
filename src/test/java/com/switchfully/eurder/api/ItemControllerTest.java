@@ -1,11 +1,10 @@
 package com.switchfully.eurder.api;
 
 import com.switchfully.eurder.Utility;
-import com.switchfully.eurder.api.customer.CreateCustomerDto;
 import com.switchfully.eurder.api.item.CreateItemDto;
 import com.switchfully.eurder.api.item.ItemDto;
-import com.switchfully.eurder.domain.Address;
-import com.switchfully.eurder.domain.Customer;
+import com.switchfully.eurder.domain.user.Address;
+import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.repository.CustomerRepository;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +32,7 @@ public class ItemControllerTest {
 
     @BeforeAll
     public void setUp() {
-        Customer customer = new Customer("Tom", "Tomsk", new Address("Birdstr", "14", "2300", "Turnhout"), "tom@tomsk.com", "0123456789", null);
+        Customer customer = new Customer("Tom", "Tomsk", new Address("street", "14", "2300", "Turnhout"), "tom@tomsk.com", "0123456789");
         customerRepository.addCustomer(customer);
     }
 

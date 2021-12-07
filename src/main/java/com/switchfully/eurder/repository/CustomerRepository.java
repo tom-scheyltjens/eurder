@@ -1,8 +1,8 @@
 package com.switchfully.eurder.repository;
 
-import com.switchfully.eurder.domain.Address;
-import com.switchfully.eurder.domain.Admin;
-import com.switchfully.eurder.domain.Customer;
+import com.switchfully.eurder.domain.user.Address;
+import com.switchfully.eurder.domain.user.Admin;
+import com.switchfully.eurder.domain.user.Customer;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class CustomerRepository {
     }
 
     public void createDefaultAdmin() {
-        Admin admin = new Admin("Default", "Admin", new Address("Minstreet", "14", "2300", "Turnhout"), "default@admin.com", "0123456789");
+        Admin admin = new Admin("Default", "Admin", new Address("street", "14", "2300", "Turnhout"), "default@admin.com", "0123456789");
         customers.put(admin.getId(), admin);
     }
 

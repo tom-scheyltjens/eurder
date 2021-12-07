@@ -1,13 +1,12 @@
 package com.switchfully.eurder.api.item;
 
-import com.switchfully.eurder.domain.Feature;
 import com.switchfully.eurder.domain.Item;
 import com.switchfully.eurder.service.ItemService;
 import com.switchfully.eurder.service.SecurityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import static com.switchfully.eurder.domain.Feature.CREATE_ITEM;
+import static com.switchfully.eurder.domain.user.Feature.CREATE_ITEM;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
