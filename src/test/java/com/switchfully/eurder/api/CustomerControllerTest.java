@@ -86,6 +86,24 @@ public class CustomerControllerTest {
     }
 
     @Test
+    void createCustomer_givenACustomerToCreateWithAnInvalidEmailAddress_thenAnErrorIsReturned() {
+        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tom", "0123456789");
+
+
+        RestAssured
+                .given()
+                .body(createCustomerDto)
+                .accept(JSON)
+                .contentType(JSON)
+                .when()
+                .port(port)
+                .post("/customers")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
     void getAllCustomers_givenAdminAccessAndACustomerTim_thenTimIsInTheReturnedList() {
 
         CustomerDto[] customerDtos =
