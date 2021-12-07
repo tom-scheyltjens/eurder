@@ -17,4 +17,10 @@ public class CustomerRepository {
     public void addCustomer(Customer customer) {
         customers.put(customer.getId(), customer);
     }
+
+    public Customer getByEmail(String email) {
+        return customers.values().stream()
+                .filter(user -> user.getEmailAddress().equals(email))
+                .findFirst().orElse(null);
+    }
 }
