@@ -1,10 +1,17 @@
 package com.switchfully.eurder.api;
 
+import com.switchfully.eurder.Utility;
 import com.switchfully.eurder.api.customer.CreateCustomerDto;
 import com.switchfully.eurder.api.customer.CustomerDto;
+import com.switchfully.eurder.api.customer.CustomerMapper;
 import com.switchfully.eurder.domain.Address;
+import com.switchfully.eurder.domain.Customer;
+import com.switchfully.eurder.repository.CustomerRepository;
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -13,9 +20,25 @@ import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CustomerControllerTest {
     @Value("${server.port}")
     private int port;
+    private Customer tim;
+    private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
+
+    @Autowired
+    public CustomerControllerTest(CustomerRepository customerRepository, CustomerMapper customerMapper) {
+        this.customerRepository = customerRepository;
+        this.customerMapper = customerMapper;
+    }
+
+    @BeforeAll
+    public void setUp(){
+        tim = new Customer("Tim", "Bae", new Address("Birdstr", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789", null);
+        customerRepository.addCustomer(tim);
+    }
 
     @Test
     void createCustomer_givenACustomerToCreate_thenTheNewlyCreatedCustomerIsSavedAndReturned() {
@@ -61,4 +84,26 @@ public class CustomerControllerTest {
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
+
+    @Test
+    void getAllCustomer_givenAdminAccessAndACustomerTim_thenTimIsInTheReturnedList() {
+
+        CustomerDto[] customerDtos =
+                RestAssured
+                        .given()
+                        .contentType(JSON)
+                        .header("Authorization", Utility.generateBase64Authorization("default@admin.com", "123"))
+                        .when()
+                        .port(port)
+                        .get("/customers")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.OK.value())
+                        .extract()
+                        .as(CustomerDto[].class);
+
+
+        assertThat(customerDtos).contains(customerMapper.customerToCustomerDto(tim));
+    }
+
 }
