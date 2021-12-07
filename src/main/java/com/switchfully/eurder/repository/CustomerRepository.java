@@ -35,6 +35,10 @@ public class CustomerRepository {
         customers.put(admin.getId(), admin);
     }
 
+    public List<Customer> getAllUsers() {
+        return customers.values().stream().toList();
+    }
+
     public List<Customer> getAllCustomers() {
         return customers.values().stream()
                 .filter(customer -> customer.getClass().equals(Customer.class))

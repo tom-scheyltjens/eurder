@@ -51,7 +51,7 @@ public class Customer {
 
     private void setEmailAddress(String emailAddress) {
         if (!isValidEmailAddress(emailAddress)) {
-            throw new InvalidEmailAddressException(emailAddress);
+            throw new InvalidEmailAddressException(emailAddress + " is not a valid email address");
         }
         this.emailAddress = emailAddress;
     }

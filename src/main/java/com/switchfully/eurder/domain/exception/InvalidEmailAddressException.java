@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidEmailAddressException extends RuntimeException{
 
-    public InvalidEmailAddressException(String email) {
-        super(email + " is not a valid email address");
+    public InvalidEmailAddressException(String message) {
+        super(message);
     }
 }

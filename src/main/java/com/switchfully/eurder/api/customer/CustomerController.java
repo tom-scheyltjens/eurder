@@ -49,9 +49,7 @@ public class CustomerController {
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerDto createCustomer(@Valid @RequestBody CreateCustomerDto createCustomerDto) {
-        Customer customer = customerMapper.createCustomerToCustomer(createCustomerDto);
-        customerService.addCustomer(customer);
-        return customerMapper.customerToCustomerDto(customer);
+        return customerService.addCustomer(createCustomerDto);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
