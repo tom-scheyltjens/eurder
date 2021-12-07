@@ -1,7 +1,6 @@
 package com.switchfully.eurder.api.customer;
 
 import com.switchfully.eurder.domain.Customer;
-import com.switchfully.eurder.domain.Feature;
 import com.switchfully.eurder.service.CustomerService;
 import com.switchfully.eurder.service.SecurityService;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,13 @@ public class CustomerController {
     public List<CustomerDto> getCustomers(@RequestHeader String authorization) {
         securityService.validate(authorization, VIEW_CUSTOMER);
         return customerService.getAllCustomers();
+    }
+
+    @GetMapping(path = "{id}", produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public CustomerDto getCustomer(@RequestHeader String authorization,@PathVariable String id){
+        securityService.validate(authorization, VIEW_CUSTOMER);
+        return customerService.getCustomer(id);
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)

@@ -21,6 +21,7 @@ public class CustomerRepository {
 
     public void addCustomer(Customer customer) {
         customers.put(customer.getId(), customer);
+        System.out.println(customer.getId()); //only for debugging in postman
     }
 
     public Customer getByEmail(String email) {
@@ -38,5 +39,9 @@ public class CustomerRepository {
         return customers.values().stream()
                 .filter(customer -> customer.getClass().equals(Customer.class))
                 .collect(Collectors.toList());
+    }
+
+    public Customer getCustomer(String id){
+        return customers.get(id);
     }
 }
