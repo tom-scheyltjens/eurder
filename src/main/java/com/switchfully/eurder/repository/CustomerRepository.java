@@ -1,5 +1,7 @@
 package com.switchfully.eurder.repository;
 
+import com.switchfully.eurder.domain.Address;
+import com.switchfully.eurder.domain.Admin;
 import com.switchfully.eurder.domain.Customer;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +14,7 @@ public class CustomerRepository {
 
     public CustomerRepository() {
         this.customers = new ConcurrentHashMap<>();
+        createDefaultAdmin();
     }
 
     public void addCustomer(Customer customer) {
@@ -22,5 +25,10 @@ public class CustomerRepository {
         return customers.values().stream()
                 .filter(user -> user.getEmailAddress().equals(email))
                 .findFirst().orElse(null);
+    }
+
+    public void createDefaultAdmin() {
+        Admin admin = new Admin("Default", "Admin", new Address("Minstreet", "14", "2300", "Turnhout"), "default@admin.com", "0123456789");
+        customers.put(admin.getId(), admin);
     }
 }

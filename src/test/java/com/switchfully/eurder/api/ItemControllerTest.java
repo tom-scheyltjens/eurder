@@ -1,5 +1,6 @@
 package com.switchfully.eurder.api;
 
+import com.switchfully.eurder.Utility;
 import com.switchfully.eurder.api.item.CreateItemDto;
 import com.switchfully.eurder.api.item.ItemDto;
 import io.restassured.RestAssured;
@@ -26,6 +27,7 @@ public class ItemControllerTest {
                         .body(createItemDto)
                         .accept(JSON)
                         .contentType(JSON)
+                        .header("Authorization", Utility.generateBase64Authorization("default@admin.com", "123"))
                         .when()
                         .port(port)
                         .post("/items")
