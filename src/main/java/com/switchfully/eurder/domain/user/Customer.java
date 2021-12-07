@@ -1,5 +1,10 @@
 package com.switchfully.eurder.domain.user;
 
+import com.switchfully.eurder.domain.exception.InvalidEmailAddressException;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import java.util.UUID;
 
 public class Customer {
@@ -7,7 +12,7 @@ public class Customer {
     private final String firstName;
     private final String lastName;
     private final Address address;
-    private final String emailAddress;
+    private String emailAddress;
     private final String phoneNumber;
 
     public Customer(String firstName, String lastName, Address address, String emailAddress, String phoneNumber) {
@@ -16,7 +21,7 @@ public class Customer {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
-        this.emailAddress = emailAddress;
+        setEmailAddress(emailAddress);
         this.phoneNumber = phoneNumber;
     }
 
@@ -42,6 +47,23 @@ public class Customer {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    private void setEmailAddress(String emailAddress) {
+        if (!isValidEmailAddress(emailAddress)) {
+            throw new InvalidEmailAddressException(emailAddress);
+        }
+        this.emailAddress = emailAddress;
+    }
+
+    private boolean isValidEmailAddress(String emailAddress){
+        try {
+            InternetAddress email = new InternetAddress(emailAddress);
+            email.validate();
+        } catch (AddressException exception) {
+            return false;
+        }
+        return true;
     }
 
     public boolean isAbleTo(Feature feature) {
