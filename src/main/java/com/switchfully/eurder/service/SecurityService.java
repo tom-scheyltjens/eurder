@@ -2,6 +2,7 @@ package com.switchfully.eurder.service;
 
 import com.switchfully.eurder.domain.Customer;
 import com.switchfully.eurder.domain.Feature;
+import com.switchfully.eurder.domain.exception.UnauthorizedException;
 import com.switchfully.eurder.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,13 @@ public class SecurityService {
         this.customerRepository = customerRepository;
     }
 
-    public Customer validate(String authorization, Feature feature) {
+    public void validate(String authorization, Feature feature) {
         Customer customer = validateUserName(authorization);
         validateAccessToFeature(customer, feature);
-        return customer;
     }
 
     private void validateAccessToFeature(Customer customer, Feature feature) {
-        if (!customer.isAbleTo(feature)) throw new IllegalArgumentException();
+        if (!customer.isAbleTo(feature)) throw new UnauthorizedException(customer.getEmailAddress() + " does not have access to " + feature.name());
     }
 
     public Customer validateUserName(String authorization) {
@@ -31,7 +31,7 @@ public class SecurityService {
 
         Customer customer = customerRepository.getByEmail(email);
         if (customer == null) {
-            throw new IllegalArgumentException();
+            throw new UnauthorizedException(email + " is not recognized in our system.");
         }
         return customer;
     }
