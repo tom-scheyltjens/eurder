@@ -1,4 +1,4 @@
 package com.switchfully.eurder.api.order;
 
-public class CreateOrderDto {
+public record CreateOrderDto(String customerId, String itemId, int amount) {
 }

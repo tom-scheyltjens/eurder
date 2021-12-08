@@ -14,5 +14,12 @@ public class ItemRepository {
         this.items = new ConcurrentHashMap<>();
     }
 
-    public void addItem(Item item) { items.put(item.getId(), item); }
+    public void addItem(Item item) {
+        items.put(item.getId(), item);
+        System.out.println(item.getName() + " " + item.getId()); //only for debugging in postman
+    }
+
+    public Item getItem(String itemId) {
+        return items.get(itemId);
+    }
 }

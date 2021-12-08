@@ -21,7 +21,7 @@ public class CustomerRepository {
 
     public void addCustomer(Customer customer) {
         customers.put(customer.getId(), customer);
-        System.out.println(customer.getId()); //only for debugging in postman
+        System.out.println(customer.getFirstName() + " " + customer.getId()); //only for debugging in postman
     }
 
     public Customer getByEmail(String email) {

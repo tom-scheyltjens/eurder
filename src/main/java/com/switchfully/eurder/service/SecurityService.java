@@ -26,13 +26,22 @@ public class SecurityService {
     }
 
     public Customer validateUserName(String authorization) {
-        String decodeUsernameAndPassword = new String(Base64.getDecoder().decode(authorization.substring("Basic ".length())));
-        String email = decodeUsernameAndPassword.substring(0, decodeUsernameAndPassword.indexOf(":"));
+        String email = getDecodedEmail(authorization);
 
         Customer customer = customerRepository.getByEmail(email);
         if (customer == null) {
             throw new UnauthorizedException(email + " is not recognized in our system.");
         }
         return customer;
+    }
+
+    private String getDecodedEmail(String authorization) {
+        String decodeUsernameAndPassword = new String(Base64.getDecoder().decode(authorization.substring("Basic ".length())));
+        return decodeUsernameAndPassword.substring(0, decodeUsernameAndPassword.indexOf(":"));
+    }
+
+    public void authenticate(String authentication, String customerId) {
+        Customer customer = validateUserName(authentication);
+        if (!customer.getId().equals(customerId)) throw new UnauthorizedException("you can not order items for another customer");
     }
 }

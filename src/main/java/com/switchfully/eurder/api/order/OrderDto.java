@@ -1,4 +1,6 @@
 package com.switchfully.eurder.api.order;
 
-public class OrderDto {
+import com.switchfully.eurder.domain.ItemGroup;
+
+public record OrderDto(String id, ItemGroup itemGroup, double totalPrice) {
 }
