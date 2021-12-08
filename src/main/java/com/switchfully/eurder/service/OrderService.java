@@ -6,6 +6,7 @@ import com.switchfully.eurder.api.order.OrderMapper;
 import com.switchfully.eurder.domain.Item;
 import com.switchfully.eurder.domain.ItemGroup;
 import com.switchfully.eurder.domain.Order;
+import com.switchfully.eurder.domain.exception.UnknownIdException;
 import com.switchfully.eurder.repository.ItemRepository;
 import com.switchfully.eurder.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class OrderService {
     }
 
     private ItemGroup getItemGroup(CreateOrderDto createOrderDto) {
+        validateItemId(createOrderDto.itemId());
         Item orderedItem = itemRepository.getItem(createOrderDto.itemId());
         ItemGroup itemGroup =  new ItemGroup(orderedItem.getId(), createOrderDto.amount(), orderedItem.getPrice());
 
@@ -50,5 +52,9 @@ public class OrderService {
     private void setShippingDate(CreateOrderDto createOrderDto, Item orderedItem, ItemGroup itemGroup) {
         if (orderedItem.getAmount() < createOrderDto.amount())
             itemGroup.setShippingDate(LocalDate.now().plusDays(DAYS_TO_ADD_IF_ITEM_IS_UNAVAILABLE));
+    }
+
+    private void validateItemId(String itemId){
+        if (itemRepository.getItem(itemId) == null) throw new UnknownIdException("the item id provided is not recognized");
     }
 }

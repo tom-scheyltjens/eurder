@@ -1,8 +1,9 @@
 package com.switchfully.eurder.service;
 
+import com.switchfully.eurder.domain.exception.UnauthorizedException;
+import com.switchfully.eurder.domain.exception.UnknownIdException;
 import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.domain.user.Feature;
-import com.switchfully.eurder.domain.exception.UnauthorizedException;
 import com.switchfully.eurder.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,8 @@ public class SecurityService {
     }
 
     private void validateAccessToFeature(Customer customer, Feature feature) {
-        if (!customer.isAbleTo(feature)) throw new UnauthorizedException(customer.getEmailAddress() + " does not have access to " + feature.name());
+        if (!customer.isAbleTo(feature))
+            throw new UnauthorizedException(customer.getEmailAddress() + " does not have access to " + feature.name());
     }
 
     public Customer validateUserName(String authorization) {
@@ -41,7 +43,15 @@ public class SecurityService {
     }
 
     public void authenticate(String authentication, String customerId) {
+        validateCustomerId(customerId);
         Customer customer = validateUserName(authentication);
-        if (!customer.getId().equals(customerId)) throw new UnauthorizedException("you can not order items for another customer");
+        if (!customer.getId().equals(customerId))
+            throw new UnauthorizedException("you can not order items for another customer");
     }
+
+    private void validateCustomerId(String customerId) {
+        if (customerRepository.getCustomer(customerId) == null)
+            throw new UnknownIdException("the customer id provided is not recognized");
+    }
+
 }
