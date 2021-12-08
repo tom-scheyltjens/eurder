@@ -22,13 +22,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(path = "/customers")
 public class CustomerController {
     private final CustomerService customerService;
-    private final CustomerMapper customerMapper;
     private final SecurityService securityService;
     private final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 
-    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, SecurityService securityService) {
+    public CustomerController(CustomerService customerService, SecurityService securityService) {
         this.customerService = customerService;
-        this.customerMapper = customerMapper;
         this.securityService = securityService;
     }
 
