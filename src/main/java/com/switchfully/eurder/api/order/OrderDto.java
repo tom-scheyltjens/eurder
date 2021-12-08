@@ -2,5 +2,7 @@ package com.switchfully.eurder.api.order;
 
 import com.switchfully.eurder.domain.ItemGroup;
 
-public record OrderDto(String id, ItemGroup itemGroup, double totalPrice) {
+import java.util.List;
+
+public record OrderDto(String id, List<ItemGroup> itemGroups, double totalPrice) {
 }

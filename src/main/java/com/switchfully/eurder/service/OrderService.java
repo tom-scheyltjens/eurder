@@ -12,6 +12,8 @@ import com.switchfully.eurder.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -27,34 +29,40 @@ public class OrderService {
     }
 
     public OrderDto addOrder(CreateOrderDto createOrderDto) {
-        ItemGroup itemGroup = getItemGroup(createOrderDto);
-        Order order = new Order(createOrderDto.customerId(), itemGroup);
+        List<ItemGroup> itemGroups = getItemGroups(createOrderDto);
+        Order order = new Order(createOrderDto.customerId(), itemGroups);
         orderRepository.addOrder(order);
         return orderMapper.orderToOrderDto(order);
     }
 
-    private ItemGroup getItemGroup(CreateOrderDto createOrderDto) {
-        validateItemId(createOrderDto.itemId());
-        Item orderedItem = itemRepository.getItem(createOrderDto.itemId());
-        ItemGroup itemGroup =  new ItemGroup(orderedItem.getId(), createOrderDto.amount(), orderedItem.getPrice());
+    private List<ItemGroup> getItemGroups(CreateOrderDto createOrderDto) {
+        List<ItemGroup> itemGroups = new ArrayList<>();
+        for (int index = 0; index < createOrderDto.itemId().size(); index++){
+            String itemId = createOrderDto.itemId().get(index);
+            int amount = createOrderDto.amount().get(index);
 
-        setShippingDate(createOrderDto, orderedItem, itemGroup);
+            validateItemId(itemId);
+            Item orderedItem = itemRepository.getItem(itemId);
+            ItemGroup itemGroup =  new ItemGroup(orderedItem.getId(), amount, orderedItem.getPrice());
 
-        removeOrderItemsFromAmount(createOrderDto, orderedItem);
+            setShippingDate(amount, orderedItem, itemGroup);
+            removeOrderItemsFromAmount(amount, orderedItem);
 
-        return itemGroup;
+            itemGroups.add(itemGroup);
+        }
+        return itemGroups;
     }
 
-    private void removeOrderItemsFromAmount(CreateOrderDto createOrderDto, Item orderedItem) {
-        orderedItem.setAmount(createOrderDto.amount());
+    private void removeOrderItemsFromAmount(int createOrderAmount, Item orderedItem) {
+        orderedItem.setAmount(createOrderAmount);
     }
 
-    private void setShippingDate(CreateOrderDto createOrderDto, Item orderedItem, ItemGroup itemGroup) {
-        if (orderedItem.getAmount() < createOrderDto.amount())
+    private void setShippingDate(int createOrderAmount, Item orderedItem, ItemGroup itemGroup) {
+        if (orderedItem.getAmount() < createOrderAmount)
             itemGroup.setShippingDate(LocalDate.now().plusDays(DAYS_TO_ADD_IF_ITEM_IS_UNAVAILABLE));
     }
 
     private void validateItemId(String itemId){
-        if (itemRepository.getItem(itemId) == null) throw new UnknownIdException("the item id provided is not recognized");
+        if (itemRepository.getItem(itemId) == null) throw new UnknownIdException(itemId + " is not recognized in our system");
     }
 }

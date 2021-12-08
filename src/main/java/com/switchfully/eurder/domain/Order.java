@@ -1,17 +1,18 @@
 package com.switchfully.eurder.domain;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Order {
     private final String id;
     private final String customerId;
-    private final ItemGroup itemGroup;
+    private final List<ItemGroup> itemGroups;
     private double totalPrice;
 
-    public Order(String customerId, ItemGroup itemGroup) {
+    public Order(String customerId, List <ItemGroup> itemGroups) {
         this.id = UUID.randomUUID().toString();
         this.customerId = customerId;
-        this.itemGroup = itemGroup;
+        this.itemGroups = itemGroups;
         setTotalPrice();
     }
 
@@ -19,8 +20,8 @@ public class Order {
         return id;
     }
 
-    public ItemGroup getItemGroup() {
-        return itemGroup;
+    public List<ItemGroup> getItemGroups() {
+        return itemGroups;
     }
 
     public double getTotalPrice() {
@@ -28,6 +29,10 @@ public class Order {
     }
 
     public void setTotalPrice() {
-        this.totalPrice = itemGroup.getItemPrice() * itemGroup.getAmount();
+        double price = 0;
+        for (ItemGroup itemGroup : itemGroups) {
+            price += itemGroup.getItemPrice() * itemGroup.getAmount();
+        }
+        this.totalPrice = price;
     }
 }
