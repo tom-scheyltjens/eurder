@@ -67,36 +67,46 @@ public class ItemControllerTest {
     void createItem_givenAnItemToCreateWithoutAdminAccess_thenAnUnauthorizedExceptionIsThrown() {
         CreateItemDto createItemDto = new CreateItemDto("Item", "the first item", 14.7, 3);
 
-        RestAssured
-                .given()
-                .body(createItemDto)
-                .accept(JSON)
-                .contentType(JSON)
-                .header("Authorization", Utility.generateBase64Authorization("tom@tomsk.com", "123"))
-                .when()
-                .port(port)
-                .post("/items")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        String message =
+                RestAssured
+                        .given()
+                        .body(createItemDto)
+                        .accept(JSON)
+                        .contentType(JSON)
+                        .header("Authorization", Utility.generateBase64Authorization("tom@tomsk.com", "123"))
+                        .when()
+                        .port(port)
+                        .post("/items")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
+                        .extract()
+                        .path("message");
+
+        assertThat(message).isEqualTo("tom@tomsk.com does not have access to CREATE_ITEM");
     }
 
     @Test
     void createItem_givenAnItemToCreateWithAnUnknownUser_thenAnUnauthorizedUserExceptionIsThrown() {
         CreateItemDto createItemDto = new CreateItemDto("Item", "the first item", 14.7, 3);
 
-        RestAssured
-                .given()
-                .body(createItemDto)
-                .accept(JSON)
-                .contentType(JSON)
-                .header("Authorization", Utility.generateBase64Authorization("unknown@user.com", "123"))
-                .when()
-                .port(port)
-                .post("/items")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        String message =
+                RestAssured
+                        .given()
+                        .body(createItemDto)
+                        .accept(JSON)
+                        .contentType(JSON)
+                        .header("Authorization", Utility.generateBase64Authorization("unknown@user.com", "123"))
+                        .when()
+                        .port(port)
+                        .post("/items")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
+                        .extract()
+                        .path("message");
+
+        assertThat(message).isEqualTo("unknown@user.com is not recognized in our system.");
     }
 
     @Test

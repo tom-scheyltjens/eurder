@@ -112,18 +112,23 @@ public class OrderControllerTest {
     void createOrder_givenAnIncorrectCustomerId_thenBadRequestErrorIsThrown() {
         CreateOrderDto createOrderDto = new CreateOrderDto("incorrectCustomerId", List.of(secondItem.getId()), List.of(4));
 
-        RestAssured
-                .given()
-                .body(createOrderDto)
-                .accept(JSON)
-                .contentType(JSON)
-                .header("Authorization", Utility.generateBase64Authorization(firstShopper.getEmailAddress(), "123"))
-                .when()
-                .port(port)
-                .post("/orders")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        String message =
+                RestAssured
+                        .given()
+                        .body(createOrderDto)
+                        .accept(JSON)
+                        .contentType(JSON)
+                        .header("Authorization", Utility.generateBase64Authorization(firstShopper.getEmailAddress(), "123"))
+                        .when()
+                        .port(port)
+                        .post("/orders")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .extract()
+                        .path("message");
+
+        assertThat(message).isEqualTo("the customer id provided is not recognized");
     }
 
     @Test
@@ -149,6 +154,7 @@ public class OrderControllerTest {
         assertThat(orderDto.totalPrice()).isEqualTo(17.3 * 3 + 9.99 * 10);
         assertThat(orderDto.itemGroups().size()).isEqualTo(2);
     }
+
     @Test
     void createOrder_givenACorrectCreateOrderWithFourItemsDtoAndCredentials_thenTheOrderIsCreatedAndReturned() {
         Item fourthItem = new Item("4", "44", 147, 999);

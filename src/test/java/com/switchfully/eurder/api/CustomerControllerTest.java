@@ -35,7 +35,7 @@ public class CustomerControllerTest {
     }
 
     @BeforeAll
-    public void setUp(){
+    public void setUp() {
         tim = new Customer("Tim", "Bae", new Address("street", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
         customerRepository.addCustomer(tim);
     }
@@ -89,36 +89,45 @@ public class CustomerControllerTest {
     void createCustomer_givenACustomerToCreateWithAnInvalidEmailAddress_thenAnErrorIsReturned() {
         CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tom", "0123456789");
 
+        String message =
+                RestAssured
+                        .given()
+                        .body(createCustomerDto)
+                        .accept(JSON)
+                        .contentType(JSON)
+                        .when()
+                        .port(port)
+                        .post("/customers")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .extract()
+                        .path("message");
 
-        RestAssured
-                .given()
-                .body(createCustomerDto)
-                .accept(JSON)
-                .contentType(JSON)
-                .when()
-                .port(port)
-                .post("/customers")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        assertThat(message).isEqualTo("tom is not a valid email address");
     }
 
     @Test
     void createCustomer_givenACustomerToCreateWithADuplicateEmailAddress_thenAnErrorIsReturned() {
         CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
 
+        String message =
+                RestAssured
+                        .given()
+                        .body(createCustomerDto)
+                        .accept(JSON)
+                        .contentType(JSON)
+                        .when()
+                        .port(port)
+                        .post("/customers")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .extract()
+                        .path("message");
 
-        RestAssured
-                .given()
-                .body(createCustomerDto)
-                .accept(JSON)
-                .contentType(JSON)
-                .when()
-                .port(port)
-                .post("/customers")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        assertThat(message).isEqualTo(createCustomerDto.emailAddress() + " is already in use, please provide an other email address");
+
     }
 
     @Test
@@ -143,7 +152,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    void getCustomer_givenAdminAccessAndACustomerTim_thenTimIsInTheReturned() {
+    void getCustomer_givenAdminAccessAndACustomerTim_thenTimIsReturned() {
 
         CustomerDto customerDto =
                 RestAssured
