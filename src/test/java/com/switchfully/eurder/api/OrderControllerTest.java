@@ -40,7 +40,7 @@ public class OrderControllerTest {
     }
 
     @BeforeAll
-    public void setUp(){
+    public void setUp() {
         firstShopper = new Customer("First", "Shopper", new Address("street", "14", "2300", "Turnhout"), "first@shopper.com", "9876543210");
         customerRepository.addCustomer(firstShopper);
         firstItem = new Item("First Item", "The first item to order", 17.3, 999);
@@ -50,7 +50,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void createOrder_givenACorrectCreateOrderDtoAndCredentials_thenTheOrderIsCreatedAndReturned(){
+    void createOrder_givenACorrectCreateOrderDtoAndCredentials_thenTheOrderIsCreatedAndReturned() {
         CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), firstItem.getId(), 3);
 
         OrderDto orderDto =
@@ -74,7 +74,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void createOrder_givenAnAmountThatIsNotInStock_thenTheOrderIsCreateWithShippingDateSevenDaysFromNow(){
+    void createOrder_givenAnAmountThatIsNotInStock_thenTheOrderIsCreateWithShippingDateSevenDaysFromNow() {
         CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), secondItem.getId(), 4);
 
         OrderDto orderDto =
@@ -97,5 +97,23 @@ public class OrderControllerTest {
         assertThat(orderDto.totalPrice()).isEqualTo(14.7 * 4);
         assertThat(orderDto.itemGroup().getShippingDate()).isEqualTo(LocalDate.now().plusDays(7));
         assertThat(secondItem.getAmount()).isEqualTo(0);
+    }
+
+    @Test
+    void createOrder_givenAnIncorrectCustomerId_thenBadRequestErrorIsThrown() {
+        CreateOrderDto createOrderDto = new CreateOrderDto("incorrectCustomerId", secondItem.getId(), 4);
+
+        RestAssured
+                .given()
+                .body(createOrderDto)
+                .accept(JSON)
+                .contentType(JSON)
+                .header("Authorization", Utility.generateBase64Authorization(firstShopper.getEmailAddress(), "123"))
+                .when()
+                .port(port)
+                .post("/orders")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }
