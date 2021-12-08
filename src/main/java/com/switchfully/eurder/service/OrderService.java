@@ -10,8 +10,11 @@ import com.switchfully.eurder.repository.ItemRepository;
 import com.switchfully.eurder.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class OrderService {
+    public static final int DAYS_TO_ADD_IF_ITEM_IS_UNAVAILABLE = 7;
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
     private final OrderMapper orderMapper;
@@ -31,7 +34,21 @@ public class OrderService {
 
     private ItemGroup getItemGroup(CreateOrderDto createOrderDto) {
         Item orderedItem = itemRepository.getItem(createOrderDto.itemId());
-        //setShippingDate (or in domain?)
-        return new ItemGroup(orderedItem.getId(), createOrderDto.amount(), orderedItem.getPrice());
+        ItemGroup itemGroup =  new ItemGroup(orderedItem.getId(), createOrderDto.amount(), orderedItem.getPrice());
+
+        setShippingDate(createOrderDto, orderedItem, itemGroup);
+
+        removeOrderItemsFromAmount(createOrderDto, orderedItem);
+
+        return itemGroup;
+    }
+
+    private void removeOrderItemsFromAmount(CreateOrderDto createOrderDto, Item orderedItem) {
+        orderedItem.setAmount(createOrderDto.amount());
+    }
+
+    private void setShippingDate(CreateOrderDto createOrderDto, Item orderedItem, ItemGroup itemGroup) {
+        if (orderedItem.getAmount() < createOrderDto.amount())
+            itemGroup.setShippingDate(LocalDate.now().plusDays(DAYS_TO_ADD_IF_ITEM_IS_UNAVAILABLE));
     }
 }

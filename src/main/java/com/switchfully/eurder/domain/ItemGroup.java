@@ -4,18 +4,19 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class ItemGroup {
+    public static final int DEFAULT_SHIPPING_DATE = 1;
     private final String id;
     private final String itemId;
     private final double itemPrice;
     private final int amount;
-    private final LocalDate shippingDate;
+    private LocalDate shippingDate;
 
     public ItemGroup(String itemId, int amount, double itemPrice) {
         this.id = UUID.randomUUID().toString();
         this.itemId = itemId;
         this.itemPrice = itemPrice;
         this.amount = amount;
-        this.shippingDate = LocalDate.now().plusDays(1);
+        this.shippingDate = LocalDate.now().plusDays(DEFAULT_SHIPPING_DATE);
     }
 
     public String getId() {
@@ -36,5 +37,9 @@ public class ItemGroup {
 
     public LocalDate getShippingDate() {
         return shippingDate;
+    }
+
+    public void setShippingDate(LocalDate date) {
+        this.shippingDate = date;
     }
 }
