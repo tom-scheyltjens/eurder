@@ -2,12 +2,14 @@ package com.switchfully.eurder.api;
 
 import com.switchfully.eurder.Utility;
 import com.switchfully.eurder.api.customer.CreateCustomerDto;
+import com.switchfully.eurder.api.customer.CustomerController;
 import com.switchfully.eurder.api.customer.CustomerDto;
 import com.switchfully.eurder.api.customer.CustomerMapper;
 import com.switchfully.eurder.domain.user.Address;
 import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.repository.CustomerRepository;
 import io.restassured.RestAssured;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static io.restassured.http.ContentType.JSON;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,6 +33,8 @@ public class CustomerControllerTest {
     private CustomerRepository customerRepository;
     @Autowired
     private CustomerMapper customerMapper;
+    @Autowired
+    CustomerController customerController;
 
     @Test
     void createCustomer_givenACustomerToCreate_thenTheNewlyCreatedCustomerIsSavedAndReturned() {
@@ -169,4 +174,10 @@ public class CustomerControllerTest {
         assertThat(customerDto).isEqualTo(customerMapper.customerToCustomerDto(tim));
     }
 
+    @Test
+    void customerControllerTestWithoutRestAssured() {
+        CustomerDto customerDto =  customerController.createCustomer(new CreateCustomerDto("integration", "test", new Address("1", "2", "3", "4"), "integration@test.com", "1234"));
+
+        assertThat(customerDto.firstName()).isEqualTo("integration");
+    }
 }
