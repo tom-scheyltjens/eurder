@@ -7,30 +7,29 @@ import com.switchfully.eurder.domain.user.Address;
 import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.repository.CustomerRepository;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ItemControllerTest {
-    @Value("${server.port}")
+    @LocalServerPort
     private int port;
-    private final CustomerRepository customerRepository;
 
     @Autowired
-    public ItemControllerTest(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+    private CustomerRepository customerRepository;
 
-    @BeforeAll
+    @BeforeEach
     public void setUp() {
         Customer customer = new Customer("Tom", "Tomsk", new Address("street", "14", "2300", "Turnhout"), "tom@tomsk.com", "0123456789");
         customerRepository.addCustomer(customer);

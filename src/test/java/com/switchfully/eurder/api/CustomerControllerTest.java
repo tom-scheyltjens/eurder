@@ -8,37 +8,28 @@ import com.switchfully.eurder.domain.user.Address;
 import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.repository.CustomerRepository;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class CustomerControllerTest {
-    @Value("${server.port}")
+    @LocalServerPort
     private int port;
+
     private Customer tim;
-    private final CustomerRepository customerRepository;
-    private final CustomerMapper customerMapper;
 
     @Autowired
-    public CustomerControllerTest(CustomerRepository customerRepository, CustomerMapper customerMapper) {
-        this.customerRepository = customerRepository;
-        this.customerMapper = customerMapper;
-    }
-
-    @BeforeAll
-    public void setUp() {
-        tim = new Customer("Tim", "Bae", new Address("street", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
-        customerRepository.addCustomer(tim);
-    }
+    private CustomerRepository customerRepository;
+    @Autowired
+    private CustomerMapper customerMapper;
 
     @Test
     void createCustomer_givenACustomerToCreate_thenTheNewlyCreatedCustomerIsSavedAndReturned() {
@@ -109,6 +100,8 @@ public class CustomerControllerTest {
 
     @Test
     void createCustomer_givenACustomerToCreateWithADuplicateEmailAddress_thenAnErrorIsReturned() {
+        tim = new Customer("Tim", "Bae", new Address("street", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
+        customerRepository.addCustomer(tim);
         CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
 
         String message =
@@ -132,6 +125,8 @@ public class CustomerControllerTest {
 
     @Test
     void getAllCustomers_givenAdminAccessAndACustomerTim_thenTimIsInTheReturnedList() {
+        tim = new Customer("Tim", "Bae", new Address("street", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
+        customerRepository.addCustomer(tim);
 
         CustomerDto[] customerDtos =
                 RestAssured
@@ -153,6 +148,8 @@ public class CustomerControllerTest {
 
     @Test
     void getCustomer_givenAdminAccessAndACustomerTim_thenTimIsReturned() {
+        tim = new Customer("Tim", "Bae", new Address("street", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
+        customerRepository.addCustomer(tim);
 
         CustomerDto customerDto =
                 RestAssured

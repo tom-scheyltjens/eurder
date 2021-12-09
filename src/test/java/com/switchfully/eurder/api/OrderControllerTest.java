@@ -14,8 +14,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
@@ -24,17 +24,21 @@ import java.util.List;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OrderControllerTest {
-    @Value("${server.port}")
+    @LocalServerPort
     private int port;
+
     private Customer firstShopper;
     private Item firstItem;
     private Item secondItem;
     private Item thirdItem;
-    private final CustomerRepository customerRepository;
-    private final ItemRepository itemRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Autowired
     public OrderControllerTest(CustomerRepository customerRepository, ItemRepository itemRepository) {
