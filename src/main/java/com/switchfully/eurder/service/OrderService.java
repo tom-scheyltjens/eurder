@@ -1,6 +1,7 @@
 package com.switchfully.eurder.service;
 
 import com.switchfully.eurder.api.order.CreateOrderDto;
+import com.switchfully.eurder.api.order.ItemGroupDto;
 import com.switchfully.eurder.api.order.OrderDto;
 import com.switchfully.eurder.api.order.OrderMapper;
 import com.switchfully.eurder.domain.Item;
@@ -29,24 +30,21 @@ public class OrderService {
     }
 
     public OrderDto addOrder(CreateOrderDto createOrderDto) {
-        List<ItemGroup> itemGroups = getItemGroups(createOrderDto);
+        List<ItemGroup> itemGroups = getItemGroups(createOrderDto.itemGroupDtos());
         Order order = new Order(createOrderDto.customerId(), itemGroups);
         orderRepository.addOrder(order);
         return orderMapper.orderToOrderDto(order);
     }
 
-    private List<ItemGroup> getItemGroups(CreateOrderDto createOrderDto) {
+    private List<ItemGroup> getItemGroups(List<ItemGroupDto> itemGroupDtos) {
         List<ItemGroup> itemGroups = new ArrayList<>();
-        for (int index = 0; index < createOrderDto.itemId().size(); index++){
-            String itemId = createOrderDto.itemId().get(index);
-            int amount = createOrderDto.amount().get(index);
+        for (ItemGroupDto itemGroupDto : itemGroupDtos){
+            validateItemId(itemGroupDto.itemId());
+            Item orderedItem = itemRepository.getItem(itemGroupDto.itemId());
+            ItemGroup itemGroup = new ItemGroup(itemGroupDto.itemId(), itemGroupDto.amount(), orderedItem.getPrice());
 
-            validateItemId(itemId);
-            Item orderedItem = itemRepository.getItem(itemId);
-            ItemGroup itemGroup =  new ItemGroup(orderedItem.getId(), amount, orderedItem.getPrice());
-
-            setShippingDate(amount, orderedItem, itemGroup);
-            removeOrderItemsFromAmount(amount, orderedItem);
+            setShippingDate(itemGroupDto.amount(), orderedItem, itemGroup);
+            removeOrderItemsFromAmount(itemGroupDto.amount(), orderedItem);
 
             itemGroups.add(itemGroup);
         }

@@ -2,6 +2,7 @@ package com.switchfully.eurder.api;
 
 import com.switchfully.eurder.Utility;
 import com.switchfully.eurder.api.order.CreateOrderDto;
+import com.switchfully.eurder.api.order.ItemGroupDto;
 import com.switchfully.eurder.api.order.OrderDto;
 import com.switchfully.eurder.domain.Item;
 import com.switchfully.eurder.domain.ItemGroup;
@@ -60,7 +61,7 @@ public class OrderControllerTest {
 
     @Test
     void createOrder_givenACorrectCreateOrderDtoAndCredentials_thenTheOrderIsCreatedAndReturned() {
-        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(firstItem.getId()), List.of(3));
+        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(new ItemGroupDto(firstItem.getId(), 3)));
 
         OrderDto orderDto =
                 RestAssured
@@ -86,7 +87,7 @@ public class OrderControllerTest {
 
     @Test
     void createOrder_givenAnAmountThatIsNotInStock_thenTheOrderIsCreateWithShippingDateSevenDaysFromNow() {
-        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(secondItem.getId()), List.of(4));
+        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(new ItemGroupDto(secondItem.getId(), 4)));
 
         OrderDto orderDto =
                 RestAssured
@@ -114,7 +115,7 @@ public class OrderControllerTest {
 
     @Test
     void createOrder_givenAnIncorrectCustomerId_thenBadRequestErrorIsThrown() {
-        CreateOrderDto createOrderDto = new CreateOrderDto("incorrectCustomerId", List.of(secondItem.getId()), List.of(4));
+        CreateOrderDto createOrderDto = new CreateOrderDto("incorrectCustomerId", List.of(new ItemGroupDto(secondItem.getId(), 4)));
 
         String message =
                 RestAssured
@@ -137,7 +138,7 @@ public class OrderControllerTest {
 
     @Test
     void createOrder_givenACorrectCreateOrderWithTwoItemsDtoAndCredentials_thenTheOrderIsCreatedAndReturned() {
-        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(firstItem.getId(), thirdItem.getId()), List.of(3, 10));
+        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(new ItemGroupDto(firstItem.getId(), 3) ,new ItemGroupDto(thirdItem.getId(), 10)));
 
         OrderDto orderDto =
                 RestAssured
@@ -165,7 +166,7 @@ public class OrderControllerTest {
         itemRepository.addItem(fourthItem);
         Item fifthItem = new Item("5", "55", 3.7, 999);
         itemRepository.addItem(fifthItem);
-        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(firstItem.getId(), thirdItem.getId(), fourthItem.getId(), fifthItem.getId()), List.of(3, 10, 2, 250));
+        CreateOrderDto createOrderDto = new CreateOrderDto(firstShopper.getId(), List.of(new ItemGroupDto(firstItem.getId(), 3), new ItemGroupDto(thirdItem.getId(), 10), new ItemGroupDto(fourthItem.getId(), 2), new ItemGroupDto(fifthItem.getId(), 250)));
 
         OrderDto orderDto =
                 RestAssured
