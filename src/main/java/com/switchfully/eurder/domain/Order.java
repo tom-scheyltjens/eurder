@@ -1,17 +1,33 @@
 package com.switchfully.eurder.domain;
 
+import com.switchfully.eurder.domain.user.Customer;
+
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "orders")
+
 public class Order {
-    private final String id;
-    private final String customerId;
-    private final List<ItemGroup> itemGroups;
+    @Id
+    @Column(name = "id")
+    private String id;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_customer_id")
+    private Customer customer;
+
+    @OneToMany(mappedBy = "order")
+    private List<ItemGroup> itemGroups;
+
+    @Column(name = "total_price")
     private double totalPrice;
 
-    public Order(String customerId, List <ItemGroup> itemGroups) {
+    protected Order() {}
+    public Order(Customer customer, List <ItemGroup> itemGroups) {
         this.id = UUID.randomUUID().toString();
-        this.customerId = customerId;
+        this.customer = customer;
         this.itemGroups = itemGroups;
         setTotalPrice();
     }
@@ -35,4 +51,6 @@ public class Order {
         }
         this.totalPrice = price;
     }
+
+
 }
