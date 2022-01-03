@@ -1,13 +1,32 @@
 package com.switchfully.eurder.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
+@Entity
+@Table(name = "items")
+
 public class Item {
-    private final String id;
-    private final String name;
-    private final String description;
-    private final double price;
+    @Id
+    @Column(name = "id")
+    private String id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "amount")
     private int amount;
+
+    protected Item() {}
 
     public Item(String name, String description, double price, int amount) {
         this.id = UUID.randomUUID().toString();

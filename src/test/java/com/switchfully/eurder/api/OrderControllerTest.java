@@ -110,7 +110,9 @@ public class OrderControllerTest {
         ItemGroup itemGroup = orderDto.itemGroups().get(0);
         assertThat(itemGroup.getItemId()).isEqualTo(secondItem.getId());
         assertThat(itemGroup.getShippingDate()).isEqualTo(LocalDate.now().plusDays(7));
-        assertThat(secondItem.getAmount()).isEqualTo(0);
+        //assertThat(secondItem.getAmount()).isEqualTo(0);
+        Item item = itemRepository.getItem(secondItem.getId());
+        assertThat(item.getAmount()).isEqualTo(0);
     }
 
     @Test

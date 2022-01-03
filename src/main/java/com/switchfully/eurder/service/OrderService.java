@@ -11,6 +11,7 @@ import com.switchfully.eurder.domain.exception.UnknownIdException;
 import com.switchfully.eurder.repository.ItemRepository;
 import com.switchfully.eurder.repository.OrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class OrderService {
         this.orderMapper = orderMapper;
     }
 
+    @Transactional
     public OrderDto addOrder(CreateOrderDto createOrderDto) {
         List<ItemGroup> itemGroups = getItemGroups(createOrderDto.itemGroupDtos());
         Order order = new Order(createOrderDto.customerId(), itemGroups);
