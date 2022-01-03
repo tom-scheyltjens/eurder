@@ -23,7 +23,7 @@ public class SecurityService {
     }
 
     private void validateAccessToFeature(Customer customer, Feature feature) {
-        if (!customer.isAbleTo(feature))
+        if (!customer.isAdmin()) //!customer.isAbleTo(feature) //TODO rewrite to include feature list again
             throw new UnauthorizedException(customer.getEmailAddress() + " does not have access to " + feature.name());
     }
 

@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class ItemRepository {
@@ -21,10 +19,10 @@ public class ItemRepository {
         entityManager.persist(item);
     }
 
-    public Item getItem(String itemId) {
-        String sql = "SELECT i from Item i where i.id = :id";
+    public Item getItem(String id) {
+        String sql = "SELECT i FROM Item i WHERE i.id = :id";
         return entityManager.createQuery(sql, Item.class)
-                .setParameter("id", itemId)
+                .setParameter("id", id)
                 .getResultList().stream()
                 .findFirst()
                 .orElse(null);

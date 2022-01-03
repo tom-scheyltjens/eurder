@@ -4,16 +4,37 @@ import com.switchfully.eurder.domain.exception.InvalidEmailAddressException;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.persistence.*;
 
 import java.util.UUID;
 
+@Entity
+@Table(name = "customers")
+
 public class Customer {
-    private final String id;
-    private final String firstName;
-    private final String lastName;
-    private final Address address;
+    @Id
+    @Column(name = "id")
+    private String id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Embedded
+    private Address address;
+
+    @Column(name = "email_address")
     private String emailAddress;
-    private final String phoneNumber;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "is_admin")
+    private boolean isAdmin;
+
+    protected Customer(){}
 
     public Customer(String firstName, String lastName, Address address, String emailAddress, String phoneNumber) {
 
@@ -23,6 +44,7 @@ public class Customer {
         this.address = address;
         setEmailAddress(emailAddress);
         this.phoneNumber = phoneNumber;
+        this.isAdmin = false;
     }
 
     public String getId() {
@@ -56,6 +78,10 @@ public class Customer {
         this.emailAddress = emailAddress;
     }
 
+    protected void createAdmin() {
+        this.isAdmin = true;
+    }
+
     private boolean isValidEmailAddress(String emailAddress){
         try {
             InternetAddress email = new InternetAddress(emailAddress);
@@ -64,6 +90,10 @@ public class Customer {
             return false;
         }
         return true;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
     }
 
     public boolean isAbleTo(Feature feature) {

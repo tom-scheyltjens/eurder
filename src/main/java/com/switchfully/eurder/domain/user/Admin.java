@@ -10,6 +10,7 @@ public class Admin extends Customer {
 
     public Admin(String firstName, String lastName, Address address, String emailAddress, String phoneNumber) {
         super(firstName, lastName, address, emailAddress, phoneNumber);
+        super.createAdmin();
     }
 
 

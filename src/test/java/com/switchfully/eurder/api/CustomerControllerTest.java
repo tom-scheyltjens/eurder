@@ -1,28 +1,27 @@
 package com.switchfully.eurder.api;
 
 import com.switchfully.eurder.Utility;
-import com.switchfully.eurder.api.customer.CreateCustomerDto;
-import com.switchfully.eurder.api.customer.CustomerController;
-import com.switchfully.eurder.api.customer.CustomerDto;
-import com.switchfully.eurder.api.customer.CustomerMapper;
+import com.switchfully.eurder.api.customer.*;
 import com.switchfully.eurder.domain.user.Address;
 import com.switchfully.eurder.domain.user.Customer;
 import com.switchfully.eurder.repository.CustomerRepository;
 import io.restassured.RestAssured;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import static io.restassured.http.ContentType.JSON;
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("test")
 public class CustomerControllerTest {
     @LocalServerPort
     private int port;
@@ -38,7 +37,7 @@ public class CustomerControllerTest {
 
     @Test
     void createCustomer_givenACustomerToCreate_thenTheNewlyCreatedCustomerIsSavedAndReturned() {
-        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tom@sch.com", "0123456789");
+        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new CreateAddressDto("Teststreet", "14", "2300", "Turnhout"), "tom@sch.com", "0123456789");
 
         CustomerDto customerDto =
                 RestAssured
@@ -58,14 +57,13 @@ public class CustomerControllerTest {
 
         assertThat(customerDto.firstName()).isEqualTo(createCustomerDto.firstName());
         assertThat(customerDto.lastName()).isEqualTo(createCustomerDto.lastName());
-        assertThat(customerDto.address()).isEqualTo(createCustomerDto.address());
         assertThat(customerDto.emailAddress()).isEqualTo(createCustomerDto.emailAddress());
         assertThat(customerDto.phoneNumber()).isEqualTo(createCustomerDto.phoneNumber());
     }
 
     @Test
     void createCustomer_givenACustomerToCreateWithEmptyFirstName_thenAnErrorMessageIsReturnedWithHttpStatusBadRequest() {
-        CreateCustomerDto createCustomerDto = new CreateCustomerDto("", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tom@sch.com", "0123456789");
+        CreateCustomerDto createCustomerDto = new CreateCustomerDto("", "Sch", new CreateAddressDto("Teststreet", "14", "2300", "Turnhout"), "tom@sch.com", "0123456789");
 
 
         RestAssured
@@ -83,7 +81,7 @@ public class CustomerControllerTest {
 
     @Test
     void createCustomer_givenACustomerToCreateWithAnInvalidEmailAddress_thenAnErrorIsReturned() {
-        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tom", "0123456789");
+        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new CreateAddressDto("Teststreet", "14", "2300", "Turnhout"), "tom", "0123456789");
 
         String message =
                 RestAssured
@@ -107,7 +105,7 @@ public class CustomerControllerTest {
     void createCustomer_givenACustomerToCreateWithADuplicateEmailAddress_thenAnErrorIsReturned() {
         tim = new Customer("Tim", "Bae", new Address("street", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
         customerRepository.addCustomer(tim);
-        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new Address("Teststreet", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
+        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Tom", "Sch", new CreateAddressDto("Teststreet", "14", "2300", "Turnhout"), "tim@bae.com", "0123456789");
 
         String message =
                 RestAssured
@@ -176,7 +174,7 @@ public class CustomerControllerTest {
 
     @Test
     void customerControllerTestWithoutRestAssured() {
-        CustomerDto customerDto =  customerController.createCustomer(new CreateCustomerDto("integration", "test", new Address("1", "2", "3", "4"), "integration@test.com", "1234"));
+        CustomerDto customerDto = customerController.createCustomer(new CreateCustomerDto("integration", "test", new CreateAddressDto("1", "2", "3", "4"), "integration@test.com", "1234"));
 
         assertThat(customerDto.firstName()).isEqualTo("integration");
     }
